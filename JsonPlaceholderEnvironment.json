@@ -1,0 +1,111 @@
+{
+	"id": "ee021385-7212-4eae-a5b4-7c6abcbd1f1d",
+	"name": "JsonPlaceholder",
+	"values": [
+		{
+			"key": "user_id",
+			"value": "1",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "createdUserId",
+			"value": "11",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "name",
+			"value": "user 201",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "username",
+			"value": "User_bjdzac",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "email",
+			"value": "user793@test.com",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "phone",
+			"value": "user793@test.com",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "base_url",
+			"value": "https://jsonplaceholder.typicode.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "post_id",
+			"value": "1",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "post_title",
+			"value": "user793@test.com",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "post_body",
+			"value": "This is a dynamically generated post.",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "userId",
+			"value": "11",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "new_post_id",
+			"value": "101",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "comment_id",
+			"value": "1",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "album_id",
+			"value": "1",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "album_title",
+			"value": "quidem molestiae enim",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "random_album_number",
+			"value": "60",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "new_album_id",
+			"value": "101",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-03-18T14:02:39.145Z",
+	"_postman_exported_using": "Postman/11.36.0"
+}

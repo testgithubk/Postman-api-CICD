@@ -1,0 +1,33 @@
+{
+	"id": "3096da44-85fb-444c-8a32-5e251f05c560",
+	"name": "OWAS Security Testing",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "https://fakestoreapi.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "product_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "order_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-03-18T14:04:15.271Z",
+	"_postman_exported_using": "Postman/11.36.0"
+}

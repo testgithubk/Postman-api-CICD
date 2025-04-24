@@ -1,0 +1,296 @@
+{
+	"info": {
+		"_postman_id": "26072560-63b5-4a1a-a495-050916259798",
+		"name": "OpenWeather API\tQuery Parameters & Performance Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41962012"
+	},
+	"item": [
+		{
+			"name": "Current Weather Data",
+			"item": [
+				{
+					"name": "Get Weather by City Name",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log(\"City before:\", pm.environment.get(\"city\"));\r",
+									"if (!pm.environment.get(\"city\")) {\r",
+									"    pm.environment.set(\"city\", \"London\");\r",
+									"    console.log(\"City was not set. Now set to London.\");\r",
+									"}\r",
+									"console.log(\"City after:\", pm.environment.get(\"city\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status Code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains weather information\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"weather\");\r",
+									"    pm.expect(jsonData.weather).to.be.an(\"array\").that.has.length.above(0);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response contains main weather data\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"main\");\r",
+									"    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"current_temp\", jsonData.main.temp);\r",
+									"\r",
+									"console.log(\"City:\", pm.environment.get(\"city\"));\r",
+									"console.log(\"Current Temperature:\", jsonData.main.temp);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/weather?q={{city}}&appid={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{city}}"
+								},
+								{
+									"key": "appid",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Weather by Geographic Coordinates",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if (!pm.environment.get(\"lat\")) {\r",
+									"    pm.environment.set(\"lat\", \"51.5074\");\r",
+									"}\r",
+									"if (!pm.environment.get(\"lon\")) {\r",
+									"    pm.environment.set(\"lon\", \"-0.1278\");\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status Code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains weather details\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"weather\");\r",
+									"    pm.expect(jsonData).to.have.property(\"main\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Main data includes temperature\", function () {\r",
+									"    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+									"});\r",
+									"\r",
+									"// Performance test\r",
+									"pm.test(\"Response time is below 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"if (jsonData.name) {\r",
+									"    pm.environment.set(\"response_city\", jsonData.name);\r",
+									"}\r",
+									"console.log(\"Response City:\", jsonData.name);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/weather?lat={{lat}}&lon={{lon}}&appid={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"weather"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "{{lat}}"
+								},
+								{
+									"key": "lon",
+									"value": "{{lon}}"
+								},
+								{
+									"key": "appid",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative & Performance Tests",
+			"item": [
+				{
+					"name": "Negative Test – Missing API Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responseText = pm.response.text();\r",
+									"let jsonData;\r",
+									"try {\r",
+									"    jsonData = pm.response.json();\r",
+									"} catch (e) {\r",
+									"    jsonData = {};\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status Code is 401 or 400\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 401]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error message\", function () {\r",
+									"    // The error might be in a property called \"message\"\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"});\r",
+									"\r",
+									"console.log(\"Response (Missing API Key):\", responseText);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/weather?q={{city}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{city}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid City Name",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"invalid_city\", \"InvalidCityNameXYZ\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"// Assert status code indicates error (typically 404 for not found)\r",
+									"pm.test(\"Status Code is 404 (Not Found)\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"// Assert that the response contains an error message\r",
+									"pm.test(\"Response contains error message for invalid city\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"});\r",
+									"\r",
+									"// Log the error message\r",
+									"console.log(\"Error for invalid city:\", jsonData.message);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/weather?q={{invalid_city}}&appid={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{invalid_city}}"
+								},
+								{
+									"key": "appid",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

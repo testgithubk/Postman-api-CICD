@@ -1,0 +1,272 @@
+{
+	"info": {
+		"_postman_id": "b6319aed-fee2-4fcc-af6f-f84575888a84",
+		"name": "ReqRes API -Authentication Testing",
+		"description": "In this phase, we will perform **Authentication Testing** using the **ReqRes API** (`https://reqres.in/`). Authentication is a critical part of any API, and we will cover different scenarios including **successful login, unsuccessful login, token validation, and negative test cases**.\n\nWe will apply **advanced testing concepts** such as:  \n✅ **Chaining requests** (reusing authentication tokens for subsequent requests)  \n✅ **Using environment variables** (storing tokens, user details, etc.)  \n✅ **Assertions** (validating response codes, messages, and token generation)  \n✅ **Negative testing** (handling incorrect credentials, missing fields, etc.)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41962012"
+	},
+	"item": [
+		{
+			"name": "Login & Authentication",
+			"item": [
+				{
+					"name": "Successful Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status Code is 200 (OK)\", function () {\r",
+									"    pm.response.to.have.status(200);  // Assert that the status code is 200\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains token\", function () {\r",
+									"    var jsonData = pm.response.json();  // Parse the response body\r",
+									"    pm.expect(jsonData).to.have.property('token');  // Assert that 'token' exists in the response\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Token is a string\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.token).to.be.a('string');  // Assert that the token is a string\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Log token to console\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    console.log(\"Token: \", jsonData.token);  // Log the token for visibility in Postman console\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{login_email}}\",\r\n    \"password\": \"{{login_password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Login (Missing Password)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+									"    pm.response.to.have.status(400);  \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+									"    pm.expect(jsonData.error).to.equal('Missing password');  // Assert the error message\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{login_email}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+									"    pm.response.to.have.status(400);  // Assert that the status code is 400\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+									"    pm.expect(jsonData.error).to.equal('Missing email or username');  // Assert the error message\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"{{login_password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Login (Incorrect Email)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+									"    pm.response.to.have.status(400);  \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+									"    pm.expect(jsonData.error).to.equal('user not found');  // Assert the error message\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"wrongemail@reqres.in\",\r\n    \"password\": \"{{login_password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Token Handling",
+			"item": [
+				{
+					"name": "Valid Token (Check Response)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"auth_token\", \"{{valid_token}}\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status Code is 200 (OK)\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains user data\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).to.have.property('id');\r",
+									"    pm.expect(jsonData.data.id).to.equal(2);  // Assuming user ID 2 exists\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

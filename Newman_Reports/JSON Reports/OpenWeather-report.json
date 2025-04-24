@@ -1,0 +1,2725 @@
+{
+  "collection": {
+    "_": {
+      "postman_id": "26072560-63b5-4a1a-a495-050916259798",
+      "exporter_id": "41962012"
+    },
+    "item": [
+      {
+        "id": "c903af6c-cac3-4f5d-ad80-7d329312e8b0",
+        "name": "Current Weather Data",
+        "item": [
+          {
+            "id": "024646c9-a1ba-4f66-bc8e-aed7503fb2c7",
+            "name": "Get Weather by City Name",
+            "request": {
+              "url": {
+                "path": [
+                  "weather"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [
+                  {
+                    "key": "q",
+                    "value": "{{city}}"
+                  },
+                  {
+                    "key": "appid",
+                    "value": "{{api_key}}"
+                  }
+                ],
+                "variable": []
+              },
+              "method": "GET"
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "prerequest",
+                "script": {
+                  "id": "760e66b7-f649-4846-98a3-63d744a3912d",
+                  "type": "text/javascript",
+                  "exec": [
+                    "console.log(\"City before:\", pm.environment.get(\"city\"));\r",
+                    "if (!pm.environment.get(\"city\")) {\r",
+                    "    pm.environment.set(\"city\", \"London\");\r",
+                    "    console.log(\"City was not set. Now set to London.\");\r",
+                    "}\r",
+                    "console.log(\"City after:\", pm.environment.get(\"city\"));"
+                  ],
+                  "_lastExecutionId": "27de7f17-7f3b-48be-8e2c-9119665bccb8"
+                }
+              },
+              {
+                "listen": "test",
+                "script": {
+                  "id": "f0bc31ae-e3a4-4859-8b40-f7a5a341cf50",
+                  "type": "text/javascript",
+                  "exec": [
+                    "\r",
+                    "let jsonData = pm.response.json();\r",
+                    "\r",
+                    "pm.test(\"Status Code is 200\", function () {\r",
+                    "    pm.response.to.have.status(200);\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response contains weather information\", function () {\r",
+                    "    pm.expect(jsonData).to.have.property(\"weather\");\r",
+                    "    pm.expect(jsonData.weather).to.be.an(\"array\").that.has.length.above(0);\r",
+                    "});\r",
+                    "\r",
+                    "\r",
+                    "pm.test(\"Response contains main weather data\", function () {\r",
+                    "    pm.expect(jsonData).to.have.property(\"main\");\r",
+                    "    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response time is less than 1000ms\", function () {\r",
+                    "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                    "});\r",
+                    "\r",
+                    "pm.environment.set(\"current_temp\", jsonData.main.temp);\r",
+                    "\r",
+                    "console.log(\"City:\", pm.environment.get(\"city\"));\r",
+                    "console.log(\"Current Temperature:\", jsonData.main.temp);\r",
+                    ""
+                  ],
+                  "_lastExecutionId": "6938c221-b5d7-4f65-bca6-df47e3d8c248"
+                }
+              }
+            ]
+          },
+          {
+            "id": "786819df-f5ac-442f-82d6-24c4e1c47747",
+            "name": "Get Weather by Geographic Coordinates",
+            "request": {
+              "url": {
+                "path": [
+                  "weather"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [
+                  {
+                    "key": "lat",
+                    "value": "{{lat}}"
+                  },
+                  {
+                    "key": "lon",
+                    "value": "{{lon}}"
+                  },
+                  {
+                    "key": "appid",
+                    "value": "{{api_key}}"
+                  }
+                ],
+                "variable": []
+              },
+              "method": "GET"
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "prerequest",
+                "script": {
+                  "id": "b5c32fe8-c7d5-4d7d-96f3-d49ab0bb2214",
+                  "type": "text/javascript",
+                  "exec": [
+                    "if (!pm.environment.get(\"lat\")) {\r",
+                    "    pm.environment.set(\"lat\", \"51.5074\");\r",
+                    "}\r",
+                    "if (!pm.environment.get(\"lon\")) {\r",
+                    "    pm.environment.set(\"lon\", \"-0.1278\");\r",
+                    "}"
+                  ],
+                  "_lastExecutionId": "a7300083-9778-4871-9ee8-c58918b6c99e"
+                }
+              },
+              {
+                "listen": "test",
+                "script": {
+                  "id": "401e1846-6cfe-46bb-af91-2e84cc79bc25",
+                  "type": "text/javascript",
+                  "exec": [
+                    "let jsonData = pm.response.json();\r",
+                    "\r",
+                    "pm.test(\"Status Code is 200\", function () {\r",
+                    "    pm.response.to.have.status(200);\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response contains weather details\", function () {\r",
+                    "    pm.expect(jsonData).to.have.property(\"weather\");\r",
+                    "    pm.expect(jsonData).to.have.property(\"main\");\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Main data includes temperature\", function () {\r",
+                    "    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+                    "});\r",
+                    "\r",
+                    "// Performance test\r",
+                    "pm.test(\"Response time is below 1000ms\", function () {\r",
+                    "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                    "});\r",
+                    "\r",
+                    "\r",
+                    "if (jsonData.name) {\r",
+                    "    pm.environment.set(\"response_city\", jsonData.name);\r",
+                    "}\r",
+                    "console.log(\"Response City:\", jsonData.name);"
+                  ],
+                  "_lastExecutionId": "9508db77-8974-4e5e-879e-58942870049e"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      },
+      {
+        "id": "9d452042-430c-43e2-bb73-50a98a6370d6",
+        "name": "Negative & Performance Tests",
+        "item": [
+          {
+            "id": "1cb4dcc1-3de4-4915-bb41-86136254cfc6",
+            "name": "Negative Test – Missing API Key",
+            "request": {
+              "url": {
+                "path": [
+                  "weather"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [
+                  {
+                    "key": "q",
+                    "value": "{{city}}"
+                  }
+                ],
+                "variable": []
+              },
+              "method": "GET"
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "d9ac1d45-4b5e-4edf-8c7e-4518a5234408",
+                  "type": "text/javascript",
+                  "exec": [
+                    "let responseText = pm.response.text();\r",
+                    "let jsonData;\r",
+                    "try {\r",
+                    "    jsonData = pm.response.json();\r",
+                    "} catch (e) {\r",
+                    "    jsonData = {};\r",
+                    "}\r",
+                    "\r",
+                    "pm.test(\"Status Code is 401 or 400\", function () {\r",
+                    "    pm.expect(pm.response.code).to.be.oneOf([400, 401]);\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response contains error message\", function () {\r",
+                    "    // The error might be in a property called \"message\"\r",
+                    "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                    "});\r",
+                    "\r",
+                    "console.log(\"Response (Missing API Key):\", responseText);"
+                  ],
+                  "_lastExecutionId": "327e68f0-a16a-47fb-9753-c6ac1b228133"
+                }
+              }
+            ]
+          },
+          {
+            "id": "d2f69289-1cee-4643-affd-23fe0f6524bf",
+            "name": "Invalid City Name",
+            "request": {
+              "url": {
+                "path": [
+                  "weather"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [
+                  {
+                    "key": "q",
+                    "value": "{{invalid_city}}"
+                  },
+                  {
+                    "key": "appid",
+                    "value": "{{api_key}}"
+                  }
+                ],
+                "variable": []
+              },
+              "method": "GET"
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "prerequest",
+                "script": {
+                  "id": "edcad236-2346-4521-8505-45046349da36",
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.environment.set(\"invalid_city\", \"InvalidCityNameXYZ\");"
+                  ],
+                  "_lastExecutionId": "eae7d010-fb34-4c3a-bbd3-315e3a9abfcb"
+                }
+              },
+              {
+                "listen": "test",
+                "script": {
+                  "id": "f537a35a-7838-4a15-9718-c08fce59bda6",
+                  "type": "text/javascript",
+                  "exec": [
+                    "let jsonData = pm.response.json();\r",
+                    "\r",
+                    "// Assert status code indicates error (typically 404 for not found)\r",
+                    "pm.test(\"Status Code is 404 (Not Found)\", function () {\r",
+                    "    pm.response.to.have.status(404);\r",
+                    "});\r",
+                    "\r",
+                    "// Assert that the response contains an error message\r",
+                    "pm.test(\"Response contains error message for invalid city\", function () {\r",
+                    "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                    "});\r",
+                    "\r",
+                    "// Log the error message\r",
+                    "console.log(\"Error for invalid city:\", jsonData.message);"
+                  ],
+                  "_lastExecutionId": "7ffbf4cf-6fd0-422e-ade9-b868ddf5f1b8"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      }
+    ],
+    "event": [],
+    "variable": [],
+    "info": {
+      "_postman_id": "26072560-63b5-4a1a-a495-050916259798",
+      "name": "OpenWeather API\tQuery Parameters & Performance Testing",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    }
+  },
+  "environment": {
+    "_": {
+      "postman_variable_scope": "environment",
+      "postman_exported_at": "2025-03-20T15:42:33.922Z",
+      "postman_exported_using": "Postman/11.37.1"
+    },
+    "id": "96de0664-0804-420c-b017-12fe409c0262",
+    "name": "Openweather API",
+    "values": [
+      {
+        "type": "any",
+        "value": "https://api.openweathermap.org/data/2.5",
+        "key": "base_url"
+      },
+      {
+        "type": "any",
+        "value": "London",
+        "key": "city"
+      },
+      {
+        "type": "any",
+        "value": "ec76632e025b431bb0c555209909476c",
+        "key": "api_key"
+      },
+      {
+        "type": "any",
+        "value": "51.5074",
+        "key": "lat"
+      },
+      {
+        "type": "any",
+        "value": "-0.1278",
+        "key": "lon"
+      },
+      {
+        "type": "any",
+        "value": "InvalidCityNameXYZ",
+        "key": "invalid_city"
+      },
+      {
+        "type": "any",
+        "value": 287.47,
+        "key": "current_temp"
+      },
+      {
+        "type": "any",
+        "value": "London",
+        "key": "response_city"
+      }
+    ]
+  },
+  "globals": {
+    "id": "f4a650b6-8d52-4c19-9114-4505fa0749a3",
+    "values": []
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 7,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 12,
+        "pending": 0,
+        "failed": 1
+      },
+      "testScripts": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 3,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "responseAverage": 348.25,
+      "responseMin": 74,
+      "responseMax": 1144,
+      "responseSd": 459.46075730142616,
+      "dnsAverage": 0,
+      "dnsMin": 0,
+      "dnsMax": 0,
+      "dnsSd": 0,
+      "firstByteAverage": 0,
+      "firstByteMin": 0,
+      "firstByteMax": 0,
+      "firstByteSd": 0,
+      "started": 1743513655863,
+      "completed": 1743513657691
+    },
+    "executions": [
+      {
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 4,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "448cdde6-23a3-473a-a565-7761c0b8fb38",
+          "httpRequestId": "aec4573c-c835-44bd-b817-d01bc4051fc0"
+        },
+        "item": {
+          "id": "024646c9-a1ba-4f66-bc8e-aed7503fb2c7",
+          "name": "Get Weather by City Name",
+          "request": {
+            "url": {
+              "path": [
+                "weather"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "{{city}}"
+                },
+                {
+                  "key": "appid",
+                  "value": "{{api_key}}"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "760e66b7-f649-4846-98a3-63d744a3912d",
+                "type": "text/javascript",
+                "exec": [
+                  "console.log(\"City before:\", pm.environment.get(\"city\"));\r",
+                  "if (!pm.environment.get(\"city\")) {\r",
+                  "    pm.environment.set(\"city\", \"London\");\r",
+                  "    console.log(\"City was not set. Now set to London.\");\r",
+                  "}\r",
+                  "console.log(\"City after:\", pm.environment.get(\"city\"));"
+                ],
+                "_lastExecutionId": "27de7f17-7f3b-48be-8e2c-9119665bccb8"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "f0bc31ae-e3a4-4859-8b40-f7a5a341cf50",
+                "type": "text/javascript",
+                "exec": [
+                  "\r",
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status Code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains weather information\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"weather\");\r",
+                  "    pm.expect(jsonData.weather).to.be.an(\"array\").that.has.length.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Response contains main weather data\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"main\");\r",
+                  "    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 1000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.environment.set(\"current_temp\", jsonData.main.temp);\r",
+                  "\r",
+                  "console.log(\"City:\", pm.environment.get(\"city\"));\r",
+                  "console.log(\"Current Temperature:\", jsonData.main.temp);\r",
+                  ""
+                ],
+                "_lastExecutionId": "6938c221-b5d7-4f65-bca6-df47e3d8c248"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "data",
+              "2.5",
+              "weather"
+            ],
+            "host": [
+              "api",
+              "openweathermap",
+              "org"
+            ],
+            "query": [
+              {
+                "key": "q",
+                "value": "London"
+              },
+              {
+                "key": "appid",
+                "value": "ec76632e025b431bb0c555209909476c"
+              }
+            ],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "cee2de5e-a2d0-4bb4-a7c5-1cf4dbbfb68f",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "api.openweathermap.org",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "bc9e20ee-b664-4ab7-abfd-805acc37f427",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Server",
+              "value": "openresty"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:20:57 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "494"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "X-Cache-Key",
+              "value": "/data/2.5/weather?q=london"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              111,
+              114,
+              100,
+              34,
+              58,
+              123,
+              34,
+              108,
+              111,
+              110,
+              34,
+              58,
+              45,
+              48,
+              46,
+              49,
+              50,
+              53,
+              55,
+              44,
+              34,
+              108,
+              97,
+              116,
+              34,
+              58,
+              53,
+              49,
+              46,
+              53,
+              48,
+              56,
+              53,
+              125,
+              44,
+              34,
+              119,
+              101,
+              97,
+              116,
+              104,
+              101,
+              114,
+              34,
+              58,
+              91,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              56,
+              48,
+              48,
+              44,
+              34,
+              109,
+              97,
+              105,
+              110,
+              34,
+              58,
+              34,
+              67,
+              108,
+              101,
+              97,
+              114,
+              34,
+              44,
+              34,
+              100,
+              101,
+              115,
+              99,
+              114,
+              105,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              58,
+              34,
+              99,
+              108,
+              101,
+              97,
+              114,
+              32,
+              115,
+              107,
+              121,
+              34,
+              44,
+              34,
+              105,
+              99,
+              111,
+              110,
+              34,
+              58,
+              34,
+              48,
+              49,
+              100,
+              34,
+              125,
+              93,
+              44,
+              34,
+              98,
+              97,
+              115,
+              101,
+              34,
+              58,
+              34,
+              115,
+              116,
+              97,
+              116,
+              105,
+              111,
+              110,
+              115,
+              34,
+              44,
+              34,
+              109,
+              97,
+              105,
+              110,
+              34,
+              58,
+              123,
+              34,
+              116,
+              101,
+              109,
+              112,
+              34,
+              58,
+              50,
+              56,
+              55,
+              46,
+              52,
+              55,
+              44,
+              34,
+              102,
+              101,
+              101,
+              108,
+              115,
+              95,
+              108,
+              105,
+              107,
+              101,
+              34,
+              58,
+              50,
+              56,
+              54,
+              46,
+              50,
+              49,
+              44,
+              34,
+              116,
+              101,
+              109,
+              112,
+              95,
+              109,
+              105,
+              110,
+              34,
+              58,
+              50,
+              56,
+              55,
+              46,
+              52,
+              55,
+              44,
+              34,
+              116,
+              101,
+              109,
+              112,
+              95,
+              109,
+              97,
+              120,
+              34,
+              58,
+              50,
+              56,
+              55,
+              46,
+              52,
+              55,
+              44,
+              34,
+              112,
+              114,
+              101,
+              115,
+              115,
+              117,
+              114,
+              101,
+              34,
+              58,
+              49,
+              48,
+              50,
+              53,
+              44,
+              34,
+              104,
+              117,
+              109,
+              105,
+              100,
+              105,
+              116,
+              121,
+              34,
+              58,
+              52,
+              56,
+              44,
+              34,
+              115,
+              101,
+              97,
+              95,
+              108,
+              101,
+              118,
+              101,
+              108,
+              34,
+              58,
+              49,
+              48,
+              50,
+              53,
+              44,
+              34,
+              103,
+              114,
+              110,
+              100,
+              95,
+              108,
+              101,
+              118,
+              101,
+              108,
+              34,
+              58,
+              49,
+              48,
+              50,
+              49,
+              125,
+              44,
+              34,
+              118,
+              105,
+              115,
+              105,
+              98,
+              105,
+              108,
+              105,
+              116,
+              121,
+              34,
+              58,
+              49,
+              48,
+              48,
+              48,
+              48,
+              44,
+              34,
+              119,
+              105,
+              110,
+              100,
+              34,
+              58,
+              123,
+              34,
+              115,
+              112,
+              101,
+              101,
+              100,
+              34,
+              58,
+              54,
+              46,
+              49,
+              49,
+              44,
+              34,
+              100,
+              101,
+              103,
+              34,
+              58,
+              56,
+              56,
+              44,
+              34,
+              103,
+              117,
+              115,
+              116,
+              34,
+              58,
+              57,
+              46,
+              50,
+              57,
+              125,
+              44,
+              34,
+              99,
+              108,
+              111,
+              117,
+              100,
+              115,
+              34,
+              58,
+              123,
+              34,
+              97,
+              108,
+              108,
+              34,
+              58,
+              48,
+              125,
+              44,
+              34,
+              100,
+              116,
+              34,
+              58,
+              49,
+              55,
+              52,
+              51,
+              53,
+              49,
+              50,
+              57,
+              57,
+              48,
+              44,
+              34,
+              115,
+              121,
+              115,
+              34,
+              58,
+              123,
+              34,
+              99,
+              111,
+              117,
+              110,
+              116,
+              114,
+              121,
+              34,
+              58,
+              34,
+              71,
+              66,
+              34,
+              44,
+              34,
+              115,
+              117,
+              110,
+              114,
+              105,
+              115,
+              101,
+              34,
+              58,
+              49,
+              55,
+              52,
+              51,
+              52,
+              56,
+              53,
+              55,
+              51,
+              49,
+              44,
+              34,
+              115,
+              117,
+              110,
+              115,
+              101,
+              116,
+              34,
+              58,
+              49,
+              55,
+              52,
+              51,
+              53,
+              51,
+              50,
+              51,
+              55,
+              49,
+              125,
+              44,
+              34,
+              116,
+              105,
+              109,
+              101,
+              122,
+              111,
+              110,
+              101,
+              34,
+              58,
+              51,
+              54,
+              48,
+              48,
+              44,
+              34,
+              105,
+              100,
+              34,
+              58,
+              50,
+              54,
+              52,
+              51,
+              55,
+              52,
+              51,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              76,
+              111,
+              110,
+              100,
+              111,
+              110,
+              34,
+              44,
+              34,
+              99,
+              111,
+              100,
+              34,
+              58,
+              50,
+              48,
+              48,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 1144,
+          "responseSize": 494
+        },
+        "id": "024646c9-a1ba-4f66-bc8e-aed7503fb2c7",
+        "assertions": [
+          {
+            "assertion": "Status Code is 200",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains weather information",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains main weather data",
+            "skipped": false
+          },
+          {
+            "assertion": "Response time is less than 1000ms",
+            "skipped": false,
+            "error": {
+              "name": "AssertionError",
+              "index": 3,
+              "test": "Response time is less than 1000ms",
+              "message": "expected 1144 to be below 1000",
+              "stack": "AssertionError: expected 1144 to be below 1000\n   at Object.eval sandbox-script.js:4:1)"
+            }
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "319e89bc-e0d4-4224-a805-51e6ee40d463",
+          "length": 4,
+          "cycles": 1,
+          "position": 1,
+          "iteration": 0,
+          "httpRequestId": "5c2ef3f5-b3bf-4d32-8a9c-791d0ffb6ade"
+        },
+        "item": {
+          "id": "786819df-f5ac-442f-82d6-24c4e1c47747",
+          "name": "Get Weather by Geographic Coordinates",
+          "request": {
+            "url": {
+              "path": [
+                "weather"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "{{lat}}"
+                },
+                {
+                  "key": "lon",
+                  "value": "{{lon}}"
+                },
+                {
+                  "key": "appid",
+                  "value": "{{api_key}}"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "b5c32fe8-c7d5-4d7d-96f3-d49ab0bb2214",
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"lat\")) {\r",
+                  "    pm.environment.set(\"lat\", \"51.5074\");\r",
+                  "}\r",
+                  "if (!pm.environment.get(\"lon\")) {\r",
+                  "    pm.environment.set(\"lon\", \"-0.1278\");\r",
+                  "}"
+                ],
+                "_lastExecutionId": "a7300083-9778-4871-9ee8-c58918b6c99e"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "401e1846-6cfe-46bb-af91-2e84cc79bc25",
+                "type": "text/javascript",
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status Code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains weather details\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"weather\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"main\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Main data includes temperature\", function () {\r",
+                  "    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+                  "});\r",
+                  "\r",
+                  "// Performance test\r",
+                  "pm.test(\"Response time is below 1000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "if (jsonData.name) {\r",
+                  "    pm.environment.set(\"response_city\", jsonData.name);\r",
+                  "}\r",
+                  "console.log(\"Response City:\", jsonData.name);"
+                ],
+                "_lastExecutionId": "9508db77-8974-4e5e-879e-58942870049e"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "data",
+              "2.5",
+              "weather"
+            ],
+            "host": [
+              "api",
+              "openweathermap",
+              "org"
+            ],
+            "query": [
+              {
+                "key": "lat",
+                "value": "51.5074"
+              },
+              {
+                "key": "lon",
+                "value": "-0.1278"
+              },
+              {
+                "key": "appid",
+                "value": "ec76632e025b431bb0c555209909476c"
+              }
+            ],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "144ff3df-bb34-4943-af4c-37260b013c2e",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "api.openweathermap.org",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "946f953d-0e87-48ca-bbe2-f1787d3c69af",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Server",
+              "value": "openresty"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:20:57 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "494"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "X-Cache-Key",
+              "value": "/data/2.5/weather?lat=51.51&lon=-0.13"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              111,
+              114,
+              100,
+              34,
+              58,
+              123,
+              34,
+              108,
+              111,
+              110,
+              34,
+              58,
+              45,
+              48,
+              46,
+              49,
+              50,
+              55,
+              56,
+              44,
+              34,
+              108,
+              97,
+              116,
+              34,
+              58,
+              53,
+              49,
+              46,
+              53,
+              48,
+              55,
+              52,
+              125,
+              44,
+              34,
+              119,
+              101,
+              97,
+              116,
+              104,
+              101,
+              114,
+              34,
+              58,
+              91,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              56,
+              48,
+              48,
+              44,
+              34,
+              109,
+              97,
+              105,
+              110,
+              34,
+              58,
+              34,
+              67,
+              108,
+              101,
+              97,
+              114,
+              34,
+              44,
+              34,
+              100,
+              101,
+              115,
+              99,
+              114,
+              105,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              58,
+              34,
+              99,
+              108,
+              101,
+              97,
+              114,
+              32,
+              115,
+              107,
+              121,
+              34,
+              44,
+              34,
+              105,
+              99,
+              111,
+              110,
+              34,
+              58,
+              34,
+              48,
+              49,
+              100,
+              34,
+              125,
+              93,
+              44,
+              34,
+              98,
+              97,
+              115,
+              101,
+              34,
+              58,
+              34,
+              115,
+              116,
+              97,
+              116,
+              105,
+              111,
+              110,
+              115,
+              34,
+              44,
+              34,
+              109,
+              97,
+              105,
+              110,
+              34,
+              58,
+              123,
+              34,
+              116,
+              101,
+              109,
+              112,
+              34,
+              58,
+              50,
+              56,
+              55,
+              46,
+              52,
+              55,
+              44,
+              34,
+              102,
+              101,
+              101,
+              108,
+              115,
+              95,
+              108,
+              105,
+              107,
+              101,
+              34,
+              58,
+              50,
+              56,
+              54,
+              46,
+              50,
+              49,
+              44,
+              34,
+              116,
+              101,
+              109,
+              112,
+              95,
+              109,
+              105,
+              110,
+              34,
+              58,
+              50,
+              56,
+              55,
+              46,
+              52,
+              55,
+              44,
+              34,
+              116,
+              101,
+              109,
+              112,
+              95,
+              109,
+              97,
+              120,
+              34,
+              58,
+              50,
+              56,
+              55,
+              46,
+              52,
+              55,
+              44,
+              34,
+              112,
+              114,
+              101,
+              115,
+              115,
+              117,
+              114,
+              101,
+              34,
+              58,
+              49,
+              48,
+              50,
+              53,
+              44,
+              34,
+              104,
+              117,
+              109,
+              105,
+              100,
+              105,
+              116,
+              121,
+              34,
+              58,
+              52,
+              56,
+              44,
+              34,
+              115,
+              101,
+              97,
+              95,
+              108,
+              101,
+              118,
+              101,
+              108,
+              34,
+              58,
+              49,
+              48,
+              50,
+              53,
+              44,
+              34,
+              103,
+              114,
+              110,
+              100,
+              95,
+              108,
+              101,
+              118,
+              101,
+              108,
+              34,
+              58,
+              49,
+              48,
+              50,
+              49,
+              125,
+              44,
+              34,
+              118,
+              105,
+              115,
+              105,
+              98,
+              105,
+              108,
+              105,
+              116,
+              121,
+              34,
+              58,
+              49,
+              48,
+              48,
+              48,
+              48,
+              44,
+              34,
+              119,
+              105,
+              110,
+              100,
+              34,
+              58,
+              123,
+              34,
+              115,
+              112,
+              101,
+              101,
+              100,
+              34,
+              58,
+              54,
+              46,
+              49,
+              49,
+              44,
+              34,
+              100,
+              101,
+              103,
+              34,
+              58,
+              56,
+              56,
+              44,
+              34,
+              103,
+              117,
+              115,
+              116,
+              34,
+              58,
+              57,
+              46,
+              50,
+              57,
+              125,
+              44,
+              34,
+              99,
+              108,
+              111,
+              117,
+              100,
+              115,
+              34,
+              58,
+              123,
+              34,
+              97,
+              108,
+              108,
+              34,
+              58,
+              48,
+              125,
+              44,
+              34,
+              100,
+              116,
+              34,
+              58,
+              49,
+              55,
+              52,
+              51,
+              53,
+              49,
+              51,
+              51,
+              54,
+              54,
+              44,
+              34,
+              115,
+              121,
+              115,
+              34,
+              58,
+              123,
+              34,
+              99,
+              111,
+              117,
+              110,
+              116,
+              114,
+              121,
+              34,
+              58,
+              34,
+              71,
+              66,
+              34,
+              44,
+              34,
+              115,
+              117,
+              110,
+              114,
+              105,
+              115,
+              101,
+              34,
+              58,
+              49,
+              55,
+              52,
+              51,
+              52,
+              56,
+              53,
+              55,
+              51,
+              49,
+              44,
+              34,
+              115,
+              117,
+              110,
+              115,
+              101,
+              116,
+              34,
+              58,
+              49,
+              55,
+              52,
+              51,
+              53,
+              51,
+              50,
+              51,
+              55,
+              50,
+              125,
+              44,
+              34,
+              116,
+              105,
+              109,
+              101,
+              122,
+              111,
+              110,
+              101,
+              34,
+              58,
+              51,
+              54,
+              48,
+              48,
+              44,
+              34,
+              105,
+              100,
+              34,
+              58,
+              50,
+              54,
+              52,
+              51,
+              55,
+              52,
+              51,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              76,
+              111,
+              110,
+              100,
+              111,
+              110,
+              34,
+              44,
+              34,
+              99,
+              111,
+              100,
+              34,
+              58,
+              50,
+              48,
+              48,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 74,
+          "responseSize": 494
+        },
+        "id": "786819df-f5ac-442f-82d6-24c4e1c47747",
+        "assertions": [
+          {
+            "assertion": "Status Code is 200",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains weather details",
+            "skipped": false
+          },
+          {
+            "assertion": "Main data includes temperature",
+            "skipped": false
+          },
+          {
+            "assertion": "Response time is below 1000ms",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "a0d9fac5-92f0-41d3-9279-73ca760b09fb",
+          "length": 4,
+          "cycles": 1,
+          "position": 2,
+          "iteration": 0,
+          "httpRequestId": "c53c7d70-66c1-4444-9b6f-3d9547e5b755"
+        },
+        "item": {
+          "id": "1cb4dcc1-3de4-4915-bb41-86136254cfc6",
+          "name": "Negative Test – Missing API Key",
+          "request": {
+            "url": {
+              "path": [
+                "weather"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "{{city}}"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d9ac1d45-4b5e-4edf-8c7e-4518a5234408",
+                "type": "text/javascript",
+                "exec": [
+                  "let responseText = pm.response.text();\r",
+                  "let jsonData;\r",
+                  "try {\r",
+                  "    jsonData = pm.response.json();\r",
+                  "} catch (e) {\r",
+                  "    jsonData = {};\r",
+                  "}\r",
+                  "\r",
+                  "pm.test(\"Status Code is 401 or 400\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401]);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains error message\", function () {\r",
+                  "    // The error might be in a property called \"message\"\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  "console.log(\"Response (Missing API Key):\", responseText);"
+                ],
+                "_lastExecutionId": "327e68f0-a16a-47fb-9753-c6ac1b228133"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "data",
+              "2.5",
+              "weather"
+            ],
+            "host": [
+              "api",
+              "openweathermap",
+              "org"
+            ],
+            "query": [
+              {
+                "key": "q",
+                "value": "London"
+              }
+            ],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "af8de044-a7a1-4306-b11a-412cf5c714da",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "api.openweathermap.org",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "52585b88-b5b4-4ffe-ae6a-fb12bdccde48",
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Server",
+              "value": "openresty"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:20:57 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "108"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "X-Cache-Key",
+              "value": "/data/2.5/weather?q=london"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              34,
+              58,
+              52,
+              48,
+              49,
+              44,
+              32,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              32,
+              34,
+              73,
+              110,
+              118,
+              97,
+              108,
+              105,
+              100,
+              32,
+              65,
+              80,
+              73,
+              32,
+              107,
+              101,
+              121,
+              46,
+              32,
+              80,
+              108,
+              101,
+              97,
+              115,
+              101,
+              32,
+              115,
+              101,
+              101,
+              32,
+              104,
+              116,
+              116,
+              112,
+              115,
+              58,
+              47,
+              47,
+              111,
+              112,
+              101,
+              110,
+              119,
+              101,
+              97,
+              116,
+              104,
+              101,
+              114,
+              109,
+              97,
+              112,
+              46,
+              111,
+              114,
+              103,
+              47,
+              102,
+              97,
+              113,
+              35,
+              101,
+              114,
+              114,
+              111,
+              114,
+              52,
+              48,
+              49,
+              32,
+              102,
+              111,
+              114,
+              32,
+              109,
+              111,
+              114,
+              101,
+              32,
+              105,
+              110,
+              102,
+              111,
+              46,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 89,
+          "responseSize": 108
+        },
+        "id": "1cb4dcc1-3de4-4915-bb41-86136254cfc6",
+        "assertions": [
+          {
+            "assertion": "Status Code is 401 or 400",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains error message",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "45ed9e94-1629-4414-8d07-d7421fa51647",
+          "length": 4,
+          "cycles": 1,
+          "position": 3,
+          "iteration": 0,
+          "httpRequestId": "c3e017ab-9e0f-4606-b7a2-c2ef1f18b608"
+        },
+        "item": {
+          "id": "d2f69289-1cee-4643-affd-23fe0f6524bf",
+          "name": "Invalid City Name",
+          "request": {
+            "url": {
+              "path": [
+                "weather"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "{{invalid_city}}"
+                },
+                {
+                  "key": "appid",
+                  "value": "{{api_key}}"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "edcad236-2346-4521-8505-45046349da36",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.environment.set(\"invalid_city\", \"InvalidCityNameXYZ\");"
+                ],
+                "_lastExecutionId": "eae7d010-fb34-4c3a-bbd3-315e3a9abfcb"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "f537a35a-7838-4a15-9718-c08fce59bda6",
+                "type": "text/javascript",
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "// Assert status code indicates error (typically 404 for not found)\r",
+                  "pm.test(\"Status Code is 404 (Not Found)\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "// Assert that the response contains an error message\r",
+                  "pm.test(\"Response contains error message for invalid city\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  "// Log the error message\r",
+                  "console.log(\"Error for invalid city:\", jsonData.message);"
+                ],
+                "_lastExecutionId": "7ffbf4cf-6fd0-422e-ade9-b868ddf5f1b8"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "data",
+              "2.5",
+              "weather"
+            ],
+            "host": [
+              "api",
+              "openweathermap",
+              "org"
+            ],
+            "query": [
+              {
+                "key": "q",
+                "value": "InvalidCityNameXYZ"
+              },
+              {
+                "key": "appid",
+                "value": "ec76632e025b431bb0c555209909476c"
+              }
+            ],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "e53d9693-022f-45e7-9323-e3260d36fc57",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "api.openweathermap.org",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "69a6dc04-6abb-4dff-80df-43ee680d9e93",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Server",
+              "value": "openresty"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:20:58 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "40"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "X-Cache-Key",
+              "value": "/data/2.5/weather?q=invalidcitynamexyz"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              34,
+              58,
+              34,
+              52,
+              48,
+              52,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              99,
+              105,
+              116,
+              121,
+              32,
+              110,
+              111,
+              116,
+              32,
+              102,
+              111,
+              117,
+              110,
+              100,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 86,
+          "responseSize": 40
+        },
+        "id": "d2f69289-1cee-4643-affd-23fe0f6524bf",
+        "assertions": [
+          {
+            "assertion": "Status Code is 404 (Not Found)",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains error message for invalid city",
+            "skipped": false
+          }
+        ]
+      }
+    ],
+    "transfers": {
+      "responseTotal": 1136
+    },
+    "failures": [
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 3,
+          "test": "Response time is less than 1000ms",
+          "message": "expected 1144 to be below 1000",
+          "stack": "AssertionError: expected 1144 to be below 1000\n   at Object.eval sandbox-script.js:4:1)",
+          "checksum": "952c87a78465b8f5d05f9addaed25496",
+          "id": "63f3d128-0794-4f14-a7cf-ce6be24e4ce0",
+          "timestamp": 1743513657129,
+          "stacktrace": [
+            {
+              "fileName": "sandbox-script.js",
+              "lineNumber": 4,
+              "functionName": "Object.eval",
+              "typeName": "Object",
+              "methodName": "eval",
+              "columnNumber": 1,
+              "native": false
+            }
+          ]
+        },
+        "at": "assertion:3 in test-script",
+        "source": {
+          "id": "024646c9-a1ba-4f66-bc8e-aed7503fb2c7",
+          "name": "Get Weather by City Name",
+          "request": {
+            "url": {
+              "path": [
+                "weather"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "{{city}}"
+                },
+                {
+                  "key": "appid",
+                  "value": "{{api_key}}"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "760e66b7-f649-4846-98a3-63d744a3912d",
+                "type": "text/javascript",
+                "exec": [
+                  "console.log(\"City before:\", pm.environment.get(\"city\"));\r",
+                  "if (!pm.environment.get(\"city\")) {\r",
+                  "    pm.environment.set(\"city\", \"London\");\r",
+                  "    console.log(\"City was not set. Now set to London.\");\r",
+                  "}\r",
+                  "console.log(\"City after:\", pm.environment.get(\"city\"));"
+                ],
+                "_lastExecutionId": "27de7f17-7f3b-48be-8e2c-9119665bccb8"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "f0bc31ae-e3a4-4859-8b40-f7a5a341cf50",
+                "type": "text/javascript",
+                "exec": [
+                  "\r",
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status Code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains weather information\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"weather\");\r",
+                  "    pm.expect(jsonData.weather).to.be.an(\"array\").that.has.length.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Response contains main weather data\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"main\");\r",
+                  "    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 1000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.environment.set(\"current_temp\", jsonData.main.temp);\r",
+                  "\r",
+                  "console.log(\"City:\", pm.environment.get(\"city\"));\r",
+                  "console.log(\"Current Temperature:\", jsonData.main.temp);\r",
+                  ""
+                ],
+                "_lastExecutionId": "6938c221-b5d7-4f65-bca6-df47e3d8c248"
+              }
+            }
+          ]
+        },
+        "parent": {
+          "id": "c903af6c-cac3-4f5d-ad80-7d329312e8b0",
+          "name": "Current Weather Data",
+          "item": [
+            {
+              "id": "024646c9-a1ba-4f66-bc8e-aed7503fb2c7",
+              "name": "Get Weather by City Name",
+              "request": {
+                "url": {
+                  "path": [
+                    "weather"
+                  ],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "{{city}}"
+                    },
+                    {
+                      "key": "appid",
+                      "value": "{{api_key}}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "760e66b7-f649-4846-98a3-63d744a3912d",
+                    "type": "text/javascript",
+                    "exec": [
+                      "console.log(\"City before:\", pm.environment.get(\"city\"));\r",
+                      "if (!pm.environment.get(\"city\")) {\r",
+                      "    pm.environment.set(\"city\", \"London\");\r",
+                      "    console.log(\"City was not set. Now set to London.\");\r",
+                      "}\r",
+                      "console.log(\"City after:\", pm.environment.get(\"city\"));"
+                    ],
+                    "_lastExecutionId": "27de7f17-7f3b-48be-8e2c-9119665bccb8"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "f0bc31ae-e3a4-4859-8b40-f7a5a341cf50",
+                    "type": "text/javascript",
+                    "exec": [
+                      "\r",
+                      "let jsonData = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Status Code is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response contains weather information\", function () {\r",
+                      "    pm.expect(jsonData).to.have.property(\"weather\");\r",
+                      "    pm.expect(jsonData.weather).to.be.an(\"array\").that.has.length.above(0);\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "pm.test(\"Response contains main weather data\", function () {\r",
+                      "    pm.expect(jsonData).to.have.property(\"main\");\r",
+                      "    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response time is less than 1000ms\", function () {\r",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                      "});\r",
+                      "\r",
+                      "pm.environment.set(\"current_temp\", jsonData.main.temp);\r",
+                      "\r",
+                      "console.log(\"City:\", pm.environment.get(\"city\"));\r",
+                      "console.log(\"Current Temperature:\", jsonData.main.temp);\r",
+                      ""
+                    ],
+                    "_lastExecutionId": "6938c221-b5d7-4f65-bca6-df47e3d8c248"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "786819df-f5ac-442f-82d6-24c4e1c47747",
+              "name": "Get Weather by Geographic Coordinates",
+              "request": {
+                "url": {
+                  "path": [
+                    "weather"
+                  ],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "{{lat}}"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "{{lon}}"
+                    },
+                    {
+                      "key": "appid",
+                      "value": "{{api_key}}"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "b5c32fe8-c7d5-4d7d-96f3-d49ab0bb2214",
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.environment.get(\"lat\")) {\r",
+                      "    pm.environment.set(\"lat\", \"51.5074\");\r",
+                      "}\r",
+                      "if (!pm.environment.get(\"lon\")) {\r",
+                      "    pm.environment.set(\"lon\", \"-0.1278\");\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "a7300083-9778-4871-9ee8-c58918b6c99e"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "401e1846-6cfe-46bb-af91-2e84cc79bc25",
+                    "type": "text/javascript",
+                    "exec": [
+                      "let jsonData = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Status Code is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response contains weather details\", function () {\r",
+                      "    pm.expect(jsonData).to.have.property(\"weather\");\r",
+                      "    pm.expect(jsonData).to.have.property(\"main\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Main data includes temperature\", function () {\r",
+                      "    pm.expect(jsonData.main).to.have.property(\"temp\");\r",
+                      "});\r",
+                      "\r",
+                      "// Performance test\r",
+                      "pm.test(\"Response time is below 1000ms\", function () {\r",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "if (jsonData.name) {\r",
+                      "    pm.environment.set(\"response_city\", jsonData.name);\r",
+                      "}\r",
+                      "console.log(\"Response City:\", jsonData.name);"
+                    ],
+                    "_lastExecutionId": "9508db77-8974-4e5e-879e-58942870049e"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": []
+        },
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 4,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "448cdde6-23a3-473a-a565-7761c0b8fb38",
+          "httpRequestId": "aec4573c-c835-44bd-b817-d01bc4051fc0",
+          "scriptId": "f0bc31ae-e3a4-4859-8b40-f7a5a341cf50",
+          "execution": "6938c221-b5d7-4f65-bca6-df47e3d8c248"
+        }
+      }
+    ],
+    "error": null
+  }
+}

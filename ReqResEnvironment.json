@@ -1,0 +1,27 @@
+{
+	"id": "0edbd5dd-7a15-4ea3-a69d-cc53afc4663e",
+	"name": "ReqRes Test Environment",
+	"values": [
+		{
+			"key": "login_email",
+			"value": "eve.holt@reqres.in",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "login_password",
+			"value": "pistol",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "base_url",
+			"value": "https://reqres.in/api",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-03-18T14:04:38.528Z",
+	"_postman_exported_using": "Postman/11.36.0"
+}

@@ -1,0 +1,1983 @@
+{
+  "collection": {
+    "_": {
+      "postman_id": "b6319aed-fee2-4fcc-af6f-f84575888a84",
+      "exporter_id": "41962012"
+    },
+    "item": [
+      {
+        "id": "c93e9b51-3ff7-4e9f-ab93-f211e9ac090e",
+        "name": "Login & Authentication",
+        "item": [
+          {
+            "id": "808828ef-3e4c-4159-a313-d5a96a023f40",
+            "name": "Successful Login",
+            "request": {
+              "url": {
+                "path": [
+                  "login"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"email\": \"{{login_email}}\",\r\n    \"password\": \"{{login_password}}\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "bd3a31bf-e9f5-4a9c-920d-bf8eb0899bad",
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status Code is 200 (OK)\", function () {\r",
+                    "    pm.response.to.have.status(200);  // Assert that the status code is 200\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response contains token\", function () {\r",
+                    "    var jsonData = pm.response.json();  // Parse the response body\r",
+                    "    pm.expect(jsonData).to.have.property('token');  // Assert that 'token' exists in the response\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Token is a string\", function () {\r",
+                    "    var jsonData = pm.response.json();\r",
+                    "    pm.expect(jsonData.token).to.be.a('string');  // Assert that the token is a string\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Log token to console\", function () {\r",
+                    "    var jsonData = pm.response.json();\r",
+                    "    console.log(\"Token: \", jsonData.token);  // Log the token for visibility in Postman console\r",
+                    "});"
+                  ],
+                  "_lastExecutionId": "28902664-7241-4351-90c6-7e4a61fdd877"
+                }
+              }
+            ]
+          },
+          {
+            "id": "d9d3ee1e-0f21-4e2f-8fbf-a26b30d44d7a",
+            "name": "Invalid Login (Missing Password)",
+            "request": {
+              "url": {
+                "path": [
+                  "login"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"email\": \"{{login_email}}\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "99d880f0-7ab0-4f69-9230-d6556f9f066d",
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+                    "    pm.response.to.have.status(400);  \r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response contains error message\", function () {\r",
+                    "    var jsonData = pm.response.json();\r",
+                    "    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+                    "    pm.expect(jsonData.error).to.equal('Missing password');  // Assert the error message\r",
+                    "});"
+                  ],
+                  "_lastExecutionId": "9db36e13-0819-4679-bd41-091ba48ce480"
+                }
+              }
+            ]
+          },
+          {
+            "id": "99e41823-9dee-46a9-83b4-5629f449f725",
+            "name": "New Request",
+            "request": {
+              "url": {
+                "path": [
+                  "login"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"password\": \"{{login_password}}\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "730ccb67-f741-40ca-aae8-66094b483f3f",
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+                    "    pm.response.to.have.status(400);  // Assert that the status code is 400\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response contains error message\", function () {\r",
+                    "    var jsonData = pm.response.json();\r",
+                    "    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+                    "    pm.expect(jsonData.error).to.equal('Missing email or username');  // Assert the error message\r",
+                    "});"
+                  ],
+                  "_lastExecutionId": "7f20a394-caf0-4ed0-8be2-e8d3603a1893"
+                }
+              }
+            ]
+          },
+          {
+            "id": "42c771aa-0d93-4998-9624-262fc2380848",
+            "name": "Invalid Login (Incorrect Email)",
+            "request": {
+              "url": {
+                "path": [
+                  "login"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"email\": \"wrongemail@reqres.in\",\r\n    \"password\": \"{{login_password}}\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "63f239ea-f052-4de8-881e-237a371f06ed",
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+                    "    pm.response.to.have.status(400);  \r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response contains error message\", function () {\r",
+                    "    var jsonData = pm.response.json();\r",
+                    "    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+                    "    pm.expect(jsonData.error).to.equal('user not found');  // Assert the error message\r",
+                    "});"
+                  ],
+                  "_lastExecutionId": "63d8efc4-47da-4726-abbf-cefc2df8e561"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      },
+      {
+        "id": "009ab5dc-54e4-4902-9b0a-57306bb466ff",
+        "name": "Token Handling",
+        "item": [
+          {
+            "id": "135357db-f376-4d93-ae4b-2c3aef1c8e8f",
+            "name": "Valid Token (Check Response)",
+            "request": {
+              "url": {
+                "path": [
+                  "users",
+                  "2"
+                ],
+                "host": [
+                  "{{base_url}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{auth_token}}"
+                }
+              ],
+              "method": "GET",
+              "auth": {
+                "type": "bearer",
+                "bearer": []
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "prerequest",
+                "script": {
+                  "id": "bd4d813e-651c-44fd-aa67-42ec9685f57f",
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.variables.set(\"auth_token\", \"{{valid_token}}\");"
+                  ],
+                  "_lastExecutionId": "f4aede8e-5700-43f9-bfc1-9ad38f0607b6"
+                }
+              },
+              {
+                "listen": "test",
+                "script": {
+                  "id": "c2093f32-16ed-46ec-b92b-37eb4b959494",
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status Code is 200 (OK)\", function () {\r",
+                    "    pm.response.to.have.status(200);\r",
+                    "});\r",
+                    "\r",
+                    "pm.test(\"Response contains user data\", function () {\r",
+                    "    var jsonData = pm.response.json();\r",
+                    "    pm.expect(jsonData).to.have.property('data');\r",
+                    "    pm.expect(jsonData.data).to.have.property('id');\r",
+                    "    pm.expect(jsonData.data.id).to.equal(2);  // Assuming user ID 2 exists\r",
+                    "});"
+                  ],
+                  "_lastExecutionId": "6b7bfc63-e64b-41bc-8a84-e024097ad8ca"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      }
+    ],
+    "event": [],
+    "variable": [],
+    "info": {
+      "_postman_id": "b6319aed-fee2-4fcc-af6f-f84575888a84",
+      "name": "ReqRes API -Authentication Testing",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": {
+        "content": "In this phase, we will perform **Authentication Testing** using the **ReqRes API** (`https://reqres.in/`). Authentication is a critical part of any API, and we will cover different scenarios including **successful login, unsuccessful login, token validation, and negative test cases**.\n\nWe will apply **advanced testing concepts** such as:  \n✅ **Chaining requests** (reusing authentication tokens for subsequent requests)  \n✅ **Using environment variables** (storing tokens, user details, etc.)  \n✅ **Assertions** (validating response codes, messages, and token generation)  \n✅ **Negative testing** (handling incorrect credentials, missing fields, etc.)",
+        "type": "text/plain"
+      }
+    }
+  },
+  "environment": {
+    "_": {
+      "postman_variable_scope": "environment",
+      "postman_exported_at": "2025-03-18T14:04:38.528Z",
+      "postman_exported_using": "Postman/11.36.0"
+    },
+    "id": "0edbd5dd-7a15-4ea3-a69d-cc53afc4663e",
+    "name": "ReqRes Test Environment",
+    "values": [
+      {
+        "type": "any",
+        "value": "eve.holt@reqres.in",
+        "key": "login_email"
+      },
+      {
+        "type": "any",
+        "value": "pistol",
+        "key": "login_password"
+      },
+      {
+        "type": "any",
+        "value": "https://reqres.in/api",
+        "key": "base_url"
+      }
+    ]
+  },
+  "globals": {
+    "id": "eff5a6ed-0916-492d-9a5e-290e7c23a750",
+    "values": []
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 6,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequests": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 12,
+        "pending": 0,
+        "failed": 0
+      },
+      "testScripts": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "responseAverage": 351.4,
+      "responseMin": 68,
+      "responseMax": 598,
+      "responseSd": 171.27942083040801,
+      "dnsAverage": 0,
+      "dnsMin": 0,
+      "dnsMax": 0,
+      "dnsSd": 0,
+      "firstByteAverage": 0,
+      "firstByteMin": 0,
+      "firstByteMax": 0,
+      "firstByteSd": 0,
+      "started": 1743513728572,
+      "completed": 1743513730815
+    },
+    "executions": [
+      {
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 5,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "a79dbbd4-29ed-413a-8302-8c2330df0fe8",
+          "httpRequestId": "7f3d9734-dd35-4170-ae3f-47679d1e0282"
+        },
+        "item": {
+          "id": "808828ef-3e4c-4159-a313-d5a96a023f40",
+          "name": "Successful Login",
+          "request": {
+            "url": {
+              "path": [
+                "login"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{login_email}}\",\r\n    \"password\": \"{{login_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "bd3a31bf-e9f5-4a9c-920d-bf8eb0899bad",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status Code is 200 (OK)\", function () {\r",
+                  "    pm.response.to.have.status(200);  // Assert that the status code is 200\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains token\", function () {\r",
+                  "    var jsonData = pm.response.json();  // Parse the response body\r",
+                  "    pm.expect(jsonData).to.have.property('token');  // Assert that 'token' exists in the response\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Token is a string\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.token).to.be.a('string');  // Assert that the token is a string\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Log token to console\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    console.log(\"Token: \", jsonData.token);  // Log the token for visibility in Postman console\r",
+                  "});"
+                ],
+                "_lastExecutionId": "28902664-7241-4351-90c6-7e4a61fdd877"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "login"
+            ],
+            "host": [
+              "reqres",
+              "in"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "abac7882-13a1-483b-abcf-a3531baf9f8f",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "reqres.in",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "66",
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "eb3ac0ec-ca40-4d6b-a65f-fb06ec73592f",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:22:09 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Cf-Ray",
+              "value": "929864c8dbb03cfa-BOM"
+            },
+            {
+              "key": "Server",
+              "value": "cloudflare"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"max_age\":3600,\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?ts=1743513729&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=uI%2BFvR67IB5UclSYTujVyeiQBJq2rEa1ePP3SYauM90%3D\"}]}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=https://nel.heroku.com/reports?ts=1743513729&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=uI%2BFvR67IB5UclSYTujVyeiQBJq2rEa1ePP3SYauM90%3D"
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"max_age\":3600,\"success_fraction\":0.005,\"failure_fraction\":0.05,\"response_headers\":[\"Via\"]}"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"1d-lGCrvD6B7Qzk11+2C98+nGhhuec\""
+            },
+            {
+              "key": "Via",
+              "value": "1.1 vegur"
+            },
+            {
+              "key": "Cf-Cache-Status",
+              "value": "DYNAMIC"
+            },
+            {
+              "key": "Content-Encoding",
+              "value": "gzip"
+            },
+            {
+              "key": "server-timing",
+              "value": "cfL4;desc=\"?proto=TCP&rtt=56394&min_rtt=53560&rtt_var=19107&sent=5&recv=5&lost=0&retrans=0&sent_bytes=2820&recv_bytes=818&delivery_rate=55299&cwnd=252&unsent_bytes=0&cid=3d06045c1dd1425f&ts=341&x=0\""
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              116,
+              111,
+              107,
+              101,
+              110,
+              34,
+              58,
+              34,
+              81,
+              112,
+              119,
+              76,
+              53,
+              116,
+              107,
+              101,
+              52,
+              80,
+              110,
+              112,
+              106,
+              97,
+              55,
+              88,
+              52,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 598,
+          "responseSize": 29
+        },
+        "id": "808828ef-3e4c-4159-a313-d5a96a023f40",
+        "assertions": [
+          {
+            "assertion": "Status Code is 200 (OK)",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains token",
+            "skipped": false
+          },
+          {
+            "assertion": "Token is a string",
+            "skipped": false
+          },
+          {
+            "assertion": "Log token to console",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "5135bf54-7b20-4108-aa4d-94c30e5e7fba",
+          "length": 5,
+          "cycles": 1,
+          "position": 1,
+          "iteration": 0,
+          "httpRequestId": "e806b8f2-c72d-4a90-90c7-44730f48db0e"
+        },
+        "item": {
+          "id": "d9d3ee1e-0f21-4e2f-8fbf-a26b30d44d7a",
+          "name": "Invalid Login (Missing Password)",
+          "request": {
+            "url": {
+              "path": [
+                "login"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{login_email}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "99d880f0-7ab0-4f69-9230-d6556f9f066d",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+                  "    pm.response.to.have.status(400);  \r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains error message\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+                  "    pm.expect(jsonData.error).to.equal('Missing password');  // Assert the error message\r",
+                  "});"
+                ],
+                "_lastExecutionId": "9db36e13-0819-4679-bd41-091ba48ce480"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "login"
+            ],
+            "host": [
+              "reqres",
+              "in"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "b9ad6ddf-d056-41ee-8811-39f1c6280ac0",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "reqres.in",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "39",
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n    \"email\": \"eve.holt@reqres.in\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "d74db660-668c-46d1-8dec-9cb701880daa",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:22:10 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "28"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Cf-Ray",
+              "value": "929864cbdda43cfa-BOM"
+            },
+            {
+              "key": "Server",
+              "value": "cloudflare"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"max_age\":3600,\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?ts=1743513730&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=jtQfiQbc7Oo96CZhis2TP7qu0itcAhNTbr86tYzCnA8%3D\"}]}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=https://nel.heroku.com/reports?ts=1743513730&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=jtQfiQbc7Oo96CZhis2TP7qu0itcAhNTbr86tYzCnA8%3D"
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"max_age\":3600,\"success_fraction\":0.005,\"failure_fraction\":0.05,\"response_headers\":[\"Via\"]}"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"1c-NmpazMScs9tOqR7eDEesn+pqC9Q\""
+            },
+            {
+              "key": "Via",
+              "value": "1.1 vegur"
+            },
+            {
+              "key": "Cf-Cache-Status",
+              "value": "DYNAMIC"
+            },
+            {
+              "key": "server-timing",
+              "value": "cfL4;desc=\"?proto=TCP&rtt=60882&min_rtt=48904&rtt_var=23001&sent=9&recv=8&lost=0&retrans=0&sent_bytes=4462&recv_bytes=1162&delivery_rate=55299&cwnd=255&unsent_bytes=0&cid=3d06045c1dd1425f&ts=821&x=0\""
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              77,
+              105,
+              115,
+              115,
+              105,
+              110,
+              103,
+              32,
+              112,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 335,
+          "responseSize": 28
+        },
+        "id": "d9d3ee1e-0f21-4e2f-8fbf-a26b30d44d7a",
+        "assertions": [
+          {
+            "assertion": "Status Code is 400 (Bad Request)",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains error message",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "c657bdf9-df66-4b74-8c5a-308aaf256034",
+          "length": 5,
+          "cycles": 1,
+          "position": 2,
+          "iteration": 0,
+          "httpRequestId": "2b2d6a7f-bac5-4e8a-a591-af9bdc8e97d2"
+        },
+        "item": {
+          "id": "99e41823-9dee-46a9-83b4-5629f449f725",
+          "name": "New Request",
+          "request": {
+            "url": {
+              "path": [
+                "login"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"{{login_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "730ccb67-f741-40ca-aae8-66094b483f3f",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+                  "    pm.response.to.have.status(400);  // Assert that the status code is 400\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains error message\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+                  "    pm.expect(jsonData.error).to.equal('Missing email or username');  // Assert the error message\r",
+                  "});"
+                ],
+                "_lastExecutionId": "7f20a394-caf0-4ed0-8be2-e8d3603a1893"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "login"
+            ],
+            "host": [
+              "reqres",
+              "in"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "1a82315d-d901-4263-a90e-a8901bde945d",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "reqres.in",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "30",
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n    \"password\": \"pistol\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "088e5c0c-66fe-4bd8-8749-0a4936d4997a",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:22:10 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "37"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Cf-Ray",
+              "value": "929864ce9f233cfa-BOM"
+            },
+            {
+              "key": "Server",
+              "value": "cloudflare"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"max_age\":3600,\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?ts=1743513730&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=jtQfiQbc7Oo96CZhis2TP7qu0itcAhNTbr86tYzCnA8%3D\"}]}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=https://nel.heroku.com/reports?ts=1743513730&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=jtQfiQbc7Oo96CZhis2TP7qu0itcAhNTbr86tYzCnA8%3D"
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"max_age\":3600,\"success_fraction\":0.005,\"failure_fraction\":0.05,\"response_headers\":[\"Via\"]}"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"25-Ik70kof1lbc973ShN5FoVPxYn7A\""
+            },
+            {
+              "key": "Via",
+              "value": "1.1 vegur"
+            },
+            {
+              "key": "Cf-Cache-Status",
+              "value": "DYNAMIC"
+            },
+            {
+              "key": "server-timing",
+              "value": "cfL4;desc=\"?proto=TCP&rtt=65051&min_rtt=48904&rtt_var=25587&sent=11&recv=10&lost=0&retrans=0&sent_bytes=5574&recv_bytes=1497&delivery_rate=55299&cwnd=256&unsent_bytes=0&cid=3d06045c1dd1425f&ts=1255&x=0\""
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              77,
+              105,
+              115,
+              115,
+              105,
+              110,
+              103,
+              32,
+              101,
+              109,
+              97,
+              105,
+              108,
+              32,
+              111,
+              114,
+              32,
+              117,
+              115,
+              101,
+              114,
+              110,
+              97,
+              109,
+              101,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 422,
+          "responseSize": 37
+        },
+        "id": "99e41823-9dee-46a9-83b4-5629f449f725",
+        "assertions": [
+          {
+            "assertion": "Status Code is 400 (Bad Request)",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains error message",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "710d9470-807c-43c3-99c0-2eb69e125386",
+          "length": 5,
+          "cycles": 1,
+          "position": 3,
+          "iteration": 0,
+          "httpRequestId": "acb69fa3-66ea-4966-904c-12ddbe885857"
+        },
+        "item": {
+          "id": "42c771aa-0d93-4998-9624-262fc2380848",
+          "name": "Invalid Login (Incorrect Email)",
+          "request": {
+            "url": {
+              "path": [
+                "login"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"wrongemail@reqres.in\",\r\n    \"password\": \"{{login_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "63f239ea-f052-4de8-881e-237a371f06ed",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status Code is 400 (Bad Request)\", function () {\r",
+                  "    pm.response.to.have.status(400);  \r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains error message\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('error');  // Assert that 'error' property exists\r",
+                  "    pm.expect(jsonData.error).to.equal('user not found');  // Assert the error message\r",
+                  "});"
+                ],
+                "_lastExecutionId": "63d8efc4-47da-4726-abbf-cefc2df8e561"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "login"
+            ],
+            "host": [
+              "reqres",
+              "in"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "ce6107b2-7d82-4636-a694-53176a89791e",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "reqres.in",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "68",
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n    \"email\": \"wrongemail@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "d4823111-a483-4e43-89ce-b73b8af90fe4",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:22:11 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "26"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Cf-Ray",
+              "value": "929864d1a95d3cfa-BOM"
+            },
+            {
+              "key": "Server",
+              "value": "cloudflare"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"max_age\":3600,\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?ts=1743513731&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=hpAD2RV4CQPDu4XDmTAz5FUGIOQYvcnXaWpG0R6vCyw%3D\"}]}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=https://nel.heroku.com/reports?ts=1743513731&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=hpAD2RV4CQPDu4XDmTAz5FUGIOQYvcnXaWpG0R6vCyw%3D"
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"max_age\":3600,\"success_fraction\":0.005,\"failure_fraction\":0.05,\"response_headers\":[\"Via\"]}"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"1a-EGIcyP6BIiCXl5Gb1aph5CGf4VQ\""
+            },
+            {
+              "key": "Via",
+              "value": "1.1 vegur"
+            },
+            {
+              "key": "Cf-Cache-Status",
+              "value": "DYNAMIC"
+            },
+            {
+              "key": "server-timing",
+              "value": "cfL4;desc=\"?proto=TCP&rtt=80773&min_rtt=48904&rtt_var=50636&sent=13&recv=12&lost=0&retrans=0&sent_bytes=6698&recv_bytes=1870&delivery_rate=55299&cwnd=257&unsent_bytes=0&cid=3d06045c1dd1425f&ts=1748&x=0\""
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              117,
+              115,
+              101,
+              114,
+              32,
+              110,
+              111,
+              116,
+              32,
+              102,
+              111,
+              117,
+              110,
+              100,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 334,
+          "responseSize": 26
+        },
+        "id": "42c771aa-0d93-4998-9624-262fc2380848",
+        "assertions": [
+          {
+            "assertion": "Status Code is 400 (Bad Request)",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains error message",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "58f31cda-4df2-4b67-9e09-dd9fed5f701d",
+          "length": 5,
+          "cycles": 1,
+          "position": 4,
+          "iteration": 0,
+          "httpRequestId": "864eaac0-5139-4abd-82fe-9424185ac7c5"
+        },
+        "item": {
+          "id": "135357db-f376-4d93-ae4b-2c3aef1c8e8f",
+          "name": "Valid Token (Check Response)",
+          "request": {
+            "url": {
+              "path": [
+                "users",
+                "2"
+              ],
+              "host": [
+                "{{base_url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": []
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "bd4d813e-651c-44fd-aa67-42ec9685f57f",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.variables.set(\"auth_token\", \"{{valid_token}}\");"
+                ],
+                "_lastExecutionId": "f4aede8e-5700-43f9-bfc1-9ad38f0607b6"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "c2093f32-16ed-46ec-b92b-37eb4b959494",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status Code is 200 (OK)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains user data\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('data');\r",
+                  "    pm.expect(jsonData.data).to.have.property('id');\r",
+                  "    pm.expect(jsonData.data.id).to.equal(2);  // Assuming user ID 2 exists\r",
+                  "});"
+                ],
+                "_lastExecutionId": "6b7bfc63-e64b-41bc-8a84-e024097ad8ca"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "users",
+              "2"
+            ],
+            "host": [
+              "reqres",
+              "in"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{valid_token}}"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.29.0",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "06f6d025-1219-4bed-ac32-8fc57889da0a",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "reqres.in",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET",
+          "auth": {
+            "type": "bearer",
+            "bearer": []
+          }
+        },
+        "response": {
+          "id": "21f2031f-35f4-48d7-9e2c-5c035bc1efb7",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Tue, 01 Apr 2025 13:22:11 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"max_age\":3600,\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?ts=1743469695&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=6fhfCGpp66lUu7BuI9zpFIFUrv%2FVdSW6vf24c%2F3XaME%3D\"}]}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=https://nel.heroku.com/reports?ts=1743469695&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&s=6fhfCGpp66lUu7BuI9zpFIFUrv%2FVdSW6vf24c%2F3XaME%3D"
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"max_age\":3600,\"success_fraction\":0.005,\"failure_fraction\":0.05,\"response_headers\":[\"Via\"]}"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"152-ApQgGHL6RKwaebFlrPCYPBO1xHg\""
+            },
+            {
+              "key": "Via",
+              "value": "1.1 vegur"
+            },
+            {
+              "key": "Cache-Control",
+              "value": "max-age=14400"
+            },
+            {
+              "key": "CF-Cache-Status",
+              "value": "HIT"
+            },
+            {
+              "key": "Age",
+              "value": "771"
+            },
+            {
+              "key": "Vary",
+              "value": "Accept-Encoding"
+            },
+            {
+              "key": "Server",
+              "value": "cloudflare"
+            },
+            {
+              "key": "CF-RAY",
+              "value": "929864d45b103cfa-BOM"
+            },
+            {
+              "key": "Content-Encoding",
+              "value": "br"
+            },
+            {
+              "key": "server-timing",
+              "value": "cfL4;desc=\"?proto=TCP&rtt=85226&min_rtt=48904&rtt_var=46883&sent=15&recv=14&lost=0&retrans=0&sent_bytes=7811&recv_bytes=2163&delivery_rate=55299&cwnd=257&unsent_bytes=0&cid=3d06045c1dd1425f&ts=1918&x=0\""
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              100,
+              97,
+              116,
+              97,
+              34,
+              58,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              50,
+              44,
+              34,
+              101,
+              109,
+              97,
+              105,
+              108,
+              34,
+              58,
+              34,
+              106,
+              97,
+              110,
+              101,
+              116,
+              46,
+              119,
+              101,
+              97,
+              118,
+              101,
+              114,
+              64,
+              114,
+              101,
+              113,
+              114,
+              101,
+              115,
+              46,
+              105,
+              110,
+              34,
+              44,
+              34,
+              102,
+              105,
+              114,
+              115,
+              116,
+              95,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              74,
+              97,
+              110,
+              101,
+              116,
+              34,
+              44,
+              34,
+              108,
+              97,
+              115,
+              116,
+              95,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              87,
+              101,
+              97,
+              118,
+              101,
+              114,
+              34,
+              44,
+              34,
+              97,
+              118,
+              97,
+              116,
+              97,
+              114,
+              34,
+              58,
+              34,
+              104,
+              116,
+              116,
+              112,
+              115,
+              58,
+              47,
+              47,
+              114,
+              101,
+              113,
+              114,
+              101,
+              115,
+              46,
+              105,
+              110,
+              47,
+              105,
+              109,
+              103,
+              47,
+              102,
+              97,
+              99,
+              101,
+              115,
+              47,
+              50,
+              45,
+              105,
+              109,
+              97,
+              103,
+              101,
+              46,
+              106,
+              112,
+              103,
+              34,
+              125,
+              44,
+              34,
+              115,
+              117,
+              112,
+              112,
+              111,
+              114,
+              116,
+              34,
+              58,
+              123,
+              34,
+              117,
+              114,
+              108,
+              34,
+              58,
+              34,
+              104,
+              116,
+              116,
+              112,
+              115,
+              58,
+              47,
+              47,
+              99,
+              111,
+              110,
+              116,
+              101,
+              110,
+              116,
+              99,
+              97,
+              100,
+              100,
+              121,
+              46,
+              105,
+              111,
+              63,
+              117,
+              116,
+              109,
+              95,
+              115,
+              111,
+              117,
+              114,
+              99,
+              101,
+              61,
+              114,
+              101,
+              113,
+              114,
+              101,
+              115,
+              38,
+              117,
+              116,
+              109,
+              95,
+              109,
+              101,
+              100,
+              105,
+              117,
+              109,
+              61,
+              106,
+              115,
+              111,
+              110,
+              38,
+              117,
+              116,
+              109,
+              95,
+              99,
+              97,
+              109,
+              112,
+              97,
+              105,
+              103,
+              110,
+              61,
+              114,
+              101,
+              102,
+              101,
+              114,
+              114,
+              97,
+              108,
+              34,
+              44,
+              34,
+              116,
+              101,
+              120,
+              116,
+              34,
+              58,
+              34,
+              84,
+              105,
+              114,
+              101,
+              100,
+              32,
+              111,
+              102,
+              32,
+              119,
+              114,
+              105,
+              116,
+              105,
+              110,
+              103,
+              32,
+              101,
+              110,
+              100,
+              108,
+              101,
+              115,
+              115,
+              32,
+              115,
+              111,
+              99,
+              105,
+              97,
+              108,
+              32,
+              109,
+              101,
+              100,
+              105,
+              97,
+              32,
+              99,
+              111,
+              110,
+              116,
+              101,
+              110,
+              116,
+              63,
+              32,
+              76,
+              101,
+              116,
+              32,
+              67,
+              111,
+              110,
+              116,
+              101,
+              110,
+              116,
+              32,
+              67,
+              97,
+              100,
+              100,
+              121,
+              32,
+              103,
+              101,
+              110,
+              101,
+              114,
+              97,
+              116,
+              101,
+              32,
+              105,
+              116,
+              32,
+              102,
+              111,
+              114,
+              32,
+              121,
+              111,
+              117,
+              46,
+              34,
+              125,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 68,
+          "responseSize": 338
+        },
+        "id": "135357db-f376-4d93-ae4b-2c3aef1c8e8f",
+        "assertions": [
+          {
+            "assertion": "Status Code is 200 (OK)",
+            "skipped": false
+          },
+          {
+            "assertion": "Response contains user data",
+            "skipped": false
+          }
+        ]
+      }
+    ],
+    "transfers": {
+      "responseTotal": 458
+    },
+    "failures": [],
+    "error": null
+  }
+}
