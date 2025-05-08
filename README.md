@@ -4,6 +4,7 @@ This project simulates a real-world API testing framework using Postman, Newman,
 authentication, security testing, performance checks, and automated reporting.
 
 Project Objectives
+
 ✅ Showcase proficiency in API testing and Postman automation.
 
 ✅ Demonstrate real-world use cases using multiple APIs.
