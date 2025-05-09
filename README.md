@@ -3,6 +3,8 @@ Advanced API Automation Framework with Postman & Newman:
 This project simulates a real-world API testing framework using Postman, Newman, and CI/CD tools like Jenkins and GitHub Actions. It covers end-to-end scenarios such as CRUD operations, 
 authentication, security testing, performance checks, and automated reporting.
 
+
+
 Project Objectives
 
 ✅ Showcase proficiency in API testing and Postman automation.
